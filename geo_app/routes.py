@@ -26,7 +26,6 @@ def sign_up_user():
 @app.route('/login', methods=['POST'])
 def log_in_user():
     auth = request.authorization
-    return jsonify({'message': auth})
     if not auth or not auth.username or not auth.password:
         return make_response('I do not know you!', '401', {'Authentication': 'login required'})
     
