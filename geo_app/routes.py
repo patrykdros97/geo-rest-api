@@ -1,5 +1,3 @@
-from crypt import methods
-from unittest import result
 import jwt
 import uuid
 import requests
@@ -18,6 +16,7 @@ def start_page():
 @app.route('/register', methods=["POST"])
 def sign_up_user():
     data = request.get_json()
+    return jsonify({'message': data})
     hashed_password = generate_password_hash(data['password'], method='sha256')
 
     new_user = Users(public_id=str(uuid.uuid4()), name=data['name'], password=hashed_password)
