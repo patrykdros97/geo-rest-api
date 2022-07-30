@@ -29,7 +29,11 @@ def log_in_user():
     if not auth or not auth.username or not auth.password:
         return make_response('I do not know you!', '401', {'Authentication': 'login required'})
     
-    user = Users.query.filter_by(name=auth.username).first()
+    try:
+        user = Users.query.filter_by(name=auth.username).first()
+    except:
+        return make_response('I do not know you!', '401', {'Authentication': 'login required'})
+
     if check_password_hash(user.password, auth.password):
         token = jwt.encode({'public_id' : user.public_id, 'exp' : datetime.utcnow() + timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
         return jsonify({'token': token})
