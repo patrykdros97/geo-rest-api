@@ -11,9 +11,9 @@ from .models import Users, GeoInfo
 from flask import jsonify, redirect, make_response, url_for, flash, request
 from werkzeug.security import generate_password_hash,check_password_hash
 
-@app.route('/test')
+@app.route('/')
 def start_page():
-    return 'Hello world'
+    return 'Welcome in GEO RestAPI'
 
 @app.route('/register', methods=["POST"])
 def sign_up_user():
