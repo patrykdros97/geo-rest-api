@@ -46,7 +46,7 @@ def log_in_user():
 @app.route('/users', methods=['GET'])
 def get_users():
     users = Users.query.all()
-    result = list(map(lambda user: {'public_id': user.public_id, 'name': user.name, 'password': user.password, 'admin': user.admin}, users))
+    result = list(map(lambda user: {'public_id': user.public_id, 'name': user.name, 'admin': user.admin}, users))
     return jsonify({'users': result})
 
 @app.route('/geo', methods=['POST'])
@@ -63,7 +63,7 @@ def save_geo(current_user):
 @token_required
 def get_geo_info(current_user):
     geo_info = GeoInfo.query.filter_by(user_id=current_user.id).first()
-    return jsonify(dict(geo_info))
+    return jsonify(vars(geo_info))
 
 @app.route('/geo_info/<int:geo_id>', methods=['DELETE'])
 @token_required
