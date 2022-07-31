@@ -51,7 +51,7 @@ def get_users():
 
 @app.route('/geo', methods=['POST'])
 @token_required
-def save_geo(current_user, token=None):
+def save_geo(current_user):
     data = request.get_json()
     ip_addres = requests.get(IP_URL).json()
     new_geo_user = GeoInfo(user_id=current_user.id, name=data['name'], **ip_addres)
@@ -59,4 +59,21 @@ def save_geo(current_user, token=None):
     db.session.commit()
     return jsonify({'message': 'New user ID added!'})
 
+@app.route('/geo_info', methods=['GET'])
+@token_required
+def get_geo_info(current_user):
+    geo_info = GeoInfo.query.filter_by(user_id=current_user.id).first()
+    return jsonify({'Geo info': geo_info})
+
+@app.route('/geo_info/<int:geo_id>', methods=['DELETE'])
+@token_required
+def delete_geo_info(current_user, geo_id):
+
+    geo_info = GeoInfo.query.filter_by(id=geo_id, user_id=current_user.id).first()
+    if not geo_info:
+        return jsonify({'message': 'Such geo info does not exist'})
     
+    db.session.delete(geo_info)
+    db.session.commit()
+    
+    return jsonify({'message': 'Geo info deleted'})
