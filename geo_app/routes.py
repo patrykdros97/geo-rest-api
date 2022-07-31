@@ -1,4 +1,3 @@
-from crypt import methods
 import jwt
 import uuid
 import requests
@@ -39,8 +38,8 @@ def log_in_user():
         return make_response('I do not know you!', '401', {'Authentication': 'login required'})
 
     if check_password_hash(user.password, auth.password):
-        token = jwt.encode({'public_id' : user.public_id, 'exp' : datetime.utcnow() + timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
-        return jsonify({'token': token})
+        #token = jwt.encode({'public_id' : user.public_id, 'exp' : datetime.utcnow() + timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
+        return redirect(url_for('save_geo'))
 
     return make_response('I do not know you!', '401', {'Authentication': 'login required'})
 

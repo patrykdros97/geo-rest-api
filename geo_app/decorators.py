@@ -17,7 +17,7 @@ def token_required(func):
 
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
-            current_user = Users.query.filter_by(public_id=data('public_id')).first()
+            current_user = Users.query.filter_by(public_id=data['public_id']).first()
         except:
             return jsonify({'message': 'token is valid'})
 
