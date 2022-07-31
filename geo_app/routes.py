@@ -1,3 +1,4 @@
+from crypt import methods
 import jwt
 import uuid
 import requests
@@ -5,9 +6,12 @@ from datetime import datetime, timedelta
 
 from geo_app import app, db
 from .models import Users, GeoInfo
+from decorators import token_required
 
 from flask import jsonify, redirect, make_response, url_for, flash, request
 from werkzeug.security import generate_password_hash,check_password_hash
+
+IP_URL = 'https://ipinfo.io/json?token=b42314e4fb5646'
 
 @app.route('/')
 def start_page():
@@ -45,4 +49,15 @@ def get_users():
     users = Users.query.all()
     result = list(map(lambda user: {'public_id': user.public_id, 'name': user.name, 'password': user.password, 'admin': user.admin}, users))
     return jsonify({'users': result})
+
+@app.route('/save_geo', methods=['POST'])
+@token_required
+def save_geo(current_user):
+    data = request.get_json()
+    ip_addres = requests.get(IP_URL).json().get('ip')
+    new_geo_user = GeoInfo(user_id=current_user.id, name=data['name'], addres_ip=ip_addres)
+    db.session.add(new_geo_user)
+    db.session.commit()
+    return jsonify({'message': 'New user ID added!'})
+
     

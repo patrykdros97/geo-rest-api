@@ -12,7 +12,16 @@ class GeoInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     name = db.Column(db.String(50))
-    addres_ip = db.Column(db.String(15))
     publish_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    ip = db.Column(db.String(15), nullable=False)
+    timezone = db.Column(db.String(50), nullable=True)
+    hostname = db.Column(db.String(50), nullable=True)
+    city = db.Column(db.String(30), nullable=True)
+    region = db.Column(db.String(20), nullable=True)
+    country = db.Column(db.String(4), nullable=True)
+    loc = db.Column(db.String(20), nullable=True)
+    org = db.Column(db.String(50), nullable=True)
+    postal = db.Column(db.String(6), nullable=True)
+
 
 db.create_all()
