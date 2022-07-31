@@ -10,7 +10,7 @@ from .decorators import token_required
 from flask import jsonify, make_response, request, Response
 from werkzeug.security import generate_password_hash, check_password_hash
 
-IP_URL = 'https://ipinfo.io/json?ip={}&token=b42314e4fb5646'
+IP_URL = 'https://ipinfo.io/{}?token=b42314e4fb5646'
 
 @app.route('/')
 def start_page() -> 'Response':
