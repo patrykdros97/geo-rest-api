@@ -38,8 +38,8 @@ def log_in_user():
         return make_response('I do not know you!', '401', {'Authentication': 'login required'})
 
     if check_password_hash(user.password, auth.password):
-        #token = jwt.encode({'public_id' : user.public_id, 'exp' : datetime.utcnow() + timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
-        return redirect(url_for('save_geo'))
+        token = jwt.encode({'public_id' : user.public_id, 'exp' : datetime.utcnow() + timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
+        return jsonify({'token': token})
 
     return make_response('I do not know you!', '401', {'Authentication': 'login required'})
 
@@ -49,9 +49,9 @@ def get_users():
     result = list(map(lambda user: {'public_id': user.public_id, 'name': user.name, 'password': user.password, 'admin': user.admin}, users))
     return jsonify({'users': result})
 
-@app.route('/save_geo', methods=['POST'])
+@app.route('/geo', methods=['POST'])
 @token_required
-def save_geo(current_user):
+def save_geo(current_user, token=None):
     data = request.get_json()
     ip_addres = requests.get(IP_URL).json()
     new_geo_user = GeoInfo(user_id=current_user.id, name=data['name'], **ip_addres)
