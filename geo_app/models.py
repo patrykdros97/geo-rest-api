@@ -24,7 +24,19 @@ class GeoInfo(db.Model):
     postal = db.Column(db.String(6), nullable=True)
 
     def to_dict(self):
-        return {key:value for key, value in self.__dict__.items()}
+        return {
+            'Name': self.name,
+            'IP address': self.ip,
+            'Timezone': self.timezone,
+            'Hostname': self.hostname,
+            'City': self.city,
+            'Region': self.region,
+            'Country': self.country,
+            'Loc': self.loc,
+            'Org': self.org,
+            'Postal': self.postal,
+            'Publish_date': self.publish_date,
+        }
 
 
 db.create_all()
