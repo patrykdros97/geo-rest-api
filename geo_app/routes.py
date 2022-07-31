@@ -10,7 +10,7 @@ from .decorators import token_required
 from flask import jsonify, make_response, request, Response
 from werkzeug.security import generate_password_hash, check_password_hash
 
-IP_URL = 'https://ipinfo.io/json'
+IP_URL = 'https://ipinfo.io/json?token=b42314e4fb5646'
 
 @app.route('/')
 def start_page() -> 'Response':
@@ -65,8 +65,9 @@ def save_geo(current_user: Users) -> 'Response':
 @app.route('/geo_info', methods=['GET'])
 @token_required
 def get_geo_info(current_user: Users) -> 'Response':
-    geo_info = GeoInfo.query.filter_by(user_id=current_user.id).first()
-    return jsonify(geo_info.to_dict()) if geo_info is not None else jsonify({'message': 'No info about user geolocation'})
+    return jsonify({'ip': request.remote_addr})
+    # geo_info = GeoInfo.query.filter_by(user_id=current_user.id).first()
+    # return jsonify(geo_info.to_dict()) if geo_info is not None else jsonify({'message': 'No info about user geolocation'})
 
 @app.route('/geo_info/<int:geo_id>', methods=['DELETE'])
 @token_required
