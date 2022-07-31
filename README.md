@@ -2,7 +2,7 @@
 Backend Flask project with JWT authorization which is able to store info about geolokalization
 
 ## Setup
-To run this project, you can run remote container by dockerfile in VS Code or build image and then run such komand:
+To run this project, you can run remote container by dockerfile in VS Code or build image and then run such command:
 
 ```
 $ cd <get to dockerfile directory>
@@ -15,7 +15,7 @@ Save user in database according to json body
 ![Algorithm schema](./images/1.png)
 
 ## ./login
-Login user using his name and passsword in Basic Auth and as response we obtaining token by which we authorize our user
+Login user using his name and password in Basic Auth and as response we obtaining token by which we authorize our user
 ![Algorithm schema](./images/2.png)
 
 ## ./users
