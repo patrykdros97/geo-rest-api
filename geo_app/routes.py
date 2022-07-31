@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 from geo_app import app, db
 from .models import Users, GeoInfo
-from decorators import token_required
+from .decorators import token_required
 
 from flask import jsonify, redirect, make_response, url_for, flash, request
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -54,8 +54,8 @@ def get_users():
 @token_required
 def save_geo(current_user):
     data = request.get_json()
-    ip_addres = requests.get(IP_URL).json().get('ip')
-    new_geo_user = GeoInfo(user_id=current_user.id, name=data['name'], addres_ip=ip_addres)
+    ip_addres = requests.get(IP_URL).json()
+    new_geo_user = GeoInfo(user_id=current_user.id, name=data['name'], **ip_addres)
     db.session.add(new_geo_user)
     db.session.commit()
     return jsonify({'message': 'New user ID added!'})
