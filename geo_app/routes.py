@@ -55,6 +55,8 @@ def get_users() -> 'Response':
 def save_geo(current_user: Users) -> 'Response':
     data = request.get_json()
     ip_addres = requests.get(IP_URL).json()
+    if ip_addres.get('readme'):
+        del ip_addres['readme']
     new_geo_user = GeoInfo(user_id=current_user.id, name=data['name'], **ip_addres)
     db.session.add(new_geo_user)
     db.session.commit()
