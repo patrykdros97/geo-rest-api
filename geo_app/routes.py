@@ -32,10 +32,7 @@ def log_in_user():
     if not auth or not auth.username or not auth.password:
         return make_response('I do not know you!', '401', {'Authentication': 'login required'})
     
-    try:
-        user = Users.query.filter_by(name=auth.username).first()
-    except:
-        return make_response('I do not know you!', '401', {'Authentication': 'login required'})
+    user = Users.query.filter_by(name=auth.username).first()
 
     if check_password_hash(user.password, auth.password):
         token = jwt.encode({'public_id' : user.public_id, 'exp' : datetime.utcnow() + timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
@@ -63,14 +60,14 @@ def save_geo(current_user):
 @token_required
 def get_geo_info(current_user):
     geo_info = GeoInfo.query.filter_by(user_id=current_user.id).first()
-    return jsonify(geo_info.to_dict())
+    return jsonify(geo_info.to_dict()) if geo_info is not None else jsonify({'message': 'No info about user id'})
 
 @app.route('/geo_info/<int:geo_id>', methods=['DELETE'])
 @token_required
 def delete_geo_info(current_user, geo_id):
 
     geo_info = GeoInfo.query.filter_by(id=geo_id, user_id=current_user.id).first()
-    if not geo_info:
+    if geo_info is None:
         return jsonify({'message': 'Such geo info does not exist'})
     
     db.session.delete(geo_info)
