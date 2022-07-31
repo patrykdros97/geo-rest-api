@@ -63,7 +63,7 @@ def save_geo(current_user):
 @token_required
 def get_geo_info(current_user):
     geo_info = GeoInfo.query.filter_by(user_id=current_user.id).first()
-    return jsonify(**geo_info.to_dict())
+    return jsonify(geo_info.to_dict())
 
 @app.route('/geo_info/<int:geo_id>', methods=['DELETE'])
 @token_required
