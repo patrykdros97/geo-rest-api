@@ -7,17 +7,17 @@ from geo_app import app, db
 from .models import Users, GeoInfo
 from .decorators import token_required
 
-from flask import jsonify, redirect, make_response, url_for, flash, request
-from werkzeug.security import generate_password_hash,check_password_hash
+from flask import jsonify, make_response, request, Response
+from werkzeug.security import generate_password_hash, check_password_hash
 
 IP_URL = 'https://ipinfo.io/json?token=b42314e4fb5646'
 
 @app.route('/')
-def start_page():
-    return 'Welcome in GEO RestAPI'
+def start_page() -> 'Response':
+    return jsonify({'message':'Welcome in GEO RestAPI'})
 
 @app.route('/register', methods=["POST"])
-def sign_up_user():
+def sign_up_user() -> 'Response':
     data = request.get_json()
     hashed_password = generate_password_hash(data['password'], method='sha256')
 
@@ -27,28 +27,32 @@ def sign_up_user():
     return jsonify({'message': 'Registration complete!'})
 
 @app.route('/login', methods=['POST'])
-def log_in_user():
+def log_in_user() -> 'Response':
     auth = request.authorization
-    if not auth or not auth.username or not auth.password:
+    if not auth.username:
+        return make_response('Missing username!', '401', {'Authentication': 'Username during logging required'})
+    if not auth.password:
+        return make_response('Missing password!', '401', {'Authentication': 'Password during login required'})
+    if not auth:
         return make_response('I do not know you!', '401', {'Authentication': 'login required'})
     
     user = Users.query.filter_by(name=auth.username).first()
 
-    if check_password_hash(user.password, auth.password):
+    if user is not None and check_password_hash(user.password, auth.password):
         token = jwt.encode({'public_id' : user.public_id, 'exp' : datetime.utcnow() + timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
         return jsonify({'token': token})
 
     return make_response('I do not know you!', '401', {'Authentication': 'login required'})
 
 @app.route('/users', methods=['GET'])
-def get_users():
+def get_users() -> 'Response':
     users = Users.query.all()
     result = list(map(lambda user: {'public_id': user.public_id, 'name': user.name, 'admin': user.admin}, users))
     return jsonify({'users': result})
 
 @app.route('/geo', methods=['POST'])
 @token_required
-def save_geo(current_user):
+def save_geo(current_user: Users) -> 'Response':
     data = request.get_json()
     ip_addres = requests.get(IP_URL).json()
     new_geo_user = GeoInfo(user_id=current_user.id, name=data['name'], **ip_addres)
@@ -58,13 +62,13 @@ def save_geo(current_user):
 
 @app.route('/geo_info', methods=['GET'])
 @token_required
-def get_geo_info(current_user):
+def get_geo_info(current_user: Users) -> 'Response':
     geo_info = GeoInfo.query.filter_by(user_id=current_user.id).first()
-    return jsonify(geo_info.to_dict()) if geo_info is not None else jsonify({'message': 'No info about user id'})
+    return jsonify(geo_info.to_dict()) if geo_info is not None else jsonify({'message': 'No info about user geolocation'})
 
 @app.route('/geo_info/<int:geo_id>', methods=['DELETE'])
 @token_required
-def delete_geo_info(current_user, geo_id):
+def delete_geo_info(current_user: Users,  geo_id: int) -> 'Response':
 
     geo_info = GeoInfo.query.filter_by(id=geo_id, user_id=current_user.id).first()
     if geo_info is None:

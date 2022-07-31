@@ -6,7 +6,7 @@ class Users(db.Model):
     public_id = db.Column(db.Integer)
     name = db.Column(db.String(50))
     password = db.Column(db.String(20))
-    admin = db.Column(db.Boolean)
+    admin = db.Column(db.Boolean, default=False)
 
 class GeoInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
