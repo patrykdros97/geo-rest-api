@@ -65,7 +65,7 @@ def save_geo(current_user: Users) -> 'Response':
 @app.route('/geo_info', methods=['GET'])
 @token_required
 def get_geo_info(current_user: Users) -> 'Response':
-    return jsonify({'ip': request.remote_addr})
+    return jsonify({'ip': request.environ['HTTP_X_FORWARDED_FOR']})
     # geo_info = GeoInfo.query.filter_by(user_id=current_user.id).first()
     # return jsonify(geo_info.to_dict()) if geo_info is not None else jsonify({'message': 'No info about user geolocation'})
 
