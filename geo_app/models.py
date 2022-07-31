@@ -23,5 +23,8 @@ class GeoInfo(db.Model):
     org = db.Column(db.String(50), nullable=True)
     postal = db.Column(db.String(6), nullable=True)
 
+    def to_dict(self):
+        return {key:value for key, value in self.__dict__.items()}
+
 
 db.create_all()
