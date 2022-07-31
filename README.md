@@ -7,7 +7,7 @@ To run this project, you can run remote container by dockerfile in VS Code or bu
 ```
 $ cd <get to dockerfile directory>
 $ docker build . -f Dockerfile -t <image> --no-cache --pull
-$ docker run -p 8080:5000 -d <image>
+$ docker run -p 5000:8080 -d <image>
 ```
 
 ## ./register
